@@ -1,17 +1,6 @@
+import React from 'react';
+import AppNavigator from './src/routing/app-navigator';
 
-import React, {Fragment} from 'react';
-import {
-  View,
-  Text,
-} from 'react-native';
-import AppNavigator from './src/app-navigator';
-
-const App = () => {
-  return (
-
-      <AppNavigator />
-   
-  );
-};
+const App = () => <AppNavigator />;
 
 export default App;

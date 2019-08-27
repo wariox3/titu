@@ -1,8 +1,7 @@
-import React, { Component, Fragment, PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
 import {
     View,
     Text,
-    Button,
     TouchableOpacity,
     FlatList
   } from 'react-native';
