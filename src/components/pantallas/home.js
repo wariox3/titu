@@ -33,6 +33,7 @@ class Home extends Component {
                error         : false,
                arGuias       : response,
             })
+            
 
          }
       }catch (e) {
