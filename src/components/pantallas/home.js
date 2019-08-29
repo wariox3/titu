@@ -3,7 +3,14 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet, Button } from 'reac
 import Carga from "../despacho/carga";
 import Detalle from "../guia/detalle";
 import API from "../../api/api";
-
+import { connect } from 'react-redux';
+function mapStateToProps(state) {   
+   debugger
+   return {
+      //arGuiasLocal: state.arGuiasGlobal
+      arGuiasLocal: []
+   }
+}
 class Home extends Component {
 
    state = {
@@ -26,6 +33,7 @@ class Home extends Component {
                error         : false,
                arGuias       : response,
             })
+
          }
       }catch (e) {
          this.setState({ error : true, cargando : false, })
@@ -70,12 +78,13 @@ class Home extends Component {
 
             {arGuias.length === 0
                ? <View>
-                     <Text>No se encontro despachos</Text>
+                     <Text>No hay guias</Text>
                   </View>
 
                : <FlatList
                   keyExtractor={(item) => item.codigoGuiaPk.toString()}
-                  data={arGuias}
+                  //data={arGuias}
+                  data={this.props.arGuiasLocal}
                   renderItem={({item}) =>
                      <View style={styles.listItem}>
                         <TouchableOpacity onPress={()=>this.handleDetalleGuia(item)}>
@@ -114,4 +123,4 @@ const styles = StyleSheet.create({
    }
 });
 
-export default Home;
+export default connect(mapStateToProps)(Home);

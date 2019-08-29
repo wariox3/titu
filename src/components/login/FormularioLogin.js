@@ -16,7 +16,7 @@ const FormularioLogin=({ usuario, contraseña, OnChange, iniciarSesion, cargando
                placeholder             = "Usuario"
                autoCorrect             = {false}
                style                   = {styles.input}
-               value                   = {usuario}
+               value                   = {usuario}            
                name                    = "usuario"
             />
             <TextInput

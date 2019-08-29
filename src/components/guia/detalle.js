@@ -3,7 +3,12 @@ import { Text, Button, Image } from 'react-native';
 import Modals from "../../commons/Modal";
 import RNImagePicker from "react-native-image-picker";
 import Spinner from '../../commons/Spinner';
-import axios from 'axios'
+import axios from 'axios';
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {   
+   return {}
+}
 
 class Detalle extends Component {
 
@@ -31,7 +36,7 @@ class Detalle extends Component {
    handleEntregarGuia= async ()=>{
       const { detalleGias:{codigoGuiaPk}, operador, handleAbrirDetalle } = this.props
       const { imgBase } = this.state;
-      const url = "http://192.168.1.64/cesio/public/index.php/api/conductor/guia/cumplido"
+      const url = "http://159.65.52.53/cesio/public/index.php/api/conductor/guia/cumplido"
       this.setState({ cargando : true })
       try{
          const response = await axios.post(url,{
@@ -113,4 +118,4 @@ Detalle.defaultProp = {
    navigation : null,
 };
 
-export default Detalle;
+export default connect(mapStateToProps)(Detalle);
