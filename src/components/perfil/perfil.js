@@ -1,11 +1,16 @@
 import React from 'react'
-import {Text, View} from "react-native";
+import {Text, View, Button} from "react-native";
 
 class Perfil extends React.Component {
+   
    render() {
+      const { pop } = this.props.navigation;
+      
       return (
          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text>Este es el perfil!</Text>
+            <Button onPress = {()=> pop()} title   = "Cerrar Session"
+            />
          </View>
       );
    }

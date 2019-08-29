@@ -1,29 +1,57 @@
 import React, { Component } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    Button    
-  } from 'react-native';
+import { Text, Image } from 'react-native';
+import Modals from "../../commons/Modal";
+import FormDespacho from "./FormDespacho";
+import PropTypes from 'prop-types';
 
-class Carga extends Component {  
-    handlePress = () => {
-        alert('Hola mundo');              
-    }           
-    render() {
-        return (                          
-            <View>
-            <Text>Despacho:</Text>
-            <TextInput            
-                placeholder="Ingrese numero despacho"                
-            /> 
-            <Button                
-                title="Cargar"
-                onPress={this.handlePress}
+class Carga extends Component {
+
+   state = {
+      despacho       : "",
+      operador       : "",
+   };
+
+   handleResetearCampos = () =>{
+      this.setState({
+         despacho : "",
+         operador : "",
+      })
+   }
+
+   handleOnchange=(name, value)=>{
+      this.setState({
+         [name] : value
+      })
+   };
+
+   render() {
+
+      const { isVisible, onRequestClose, ListaDespachos, cargando } = this.props;
+      const { despacho, operador } = this.state;
+
+      return (
+         <Modals
+            onRequestClose  =  {onRequestClose}
+            isVisible       =  {isVisible}
+         >
+            <Text>Despacho :</Text>
+            <FormDespacho
+               handlePress = {()=>{ ListaDespachos(operador,despacho); this.handleResetearCampos() }}
+               OnChange    = {this.handleOnchange.bind(this)}
+               despacho    = {despacho}
+               operador    = {operador}
+               cargando    = {cargando}
             />
-            </View>                                                                                                                                   
-        )      
-    }
+         </Modals>
+      )
+   }
 }
+
+Carga.propTypes = {
+   ListaDespachos  : PropTypes.func,
+   onRequestClose  : PropTypes.func,
+   isVisible       : PropTypes.bool,
+   cargando        : PropTypes.bool,
+};
 
 export default Carga;
