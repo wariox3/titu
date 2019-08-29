@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Text, Image } from 'react-native';
+import { Text } from 'react-native';
 import Modals from "../../commons/Modal";
 import FormDespacho from "./FormDespacho";
 import PropTypes from 'prop-types';
+import { NavigationActions } from 'react-navigation';
 
 class Carga extends Component {
 
@@ -11,7 +12,8 @@ class Carga extends Component {
       operador       : "",
    };
 
-   handleResetearCampos = () =>{
+   handleResetearCampos = () =>{    
+      this.props.navigation.navigate('Home', {"operador" : this.state.operador})
       this.setState({
          despacho : "",
          operador : "",

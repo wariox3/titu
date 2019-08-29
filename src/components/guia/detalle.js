@@ -9,7 +9,9 @@ class Detalle extends Component {
 
    state = {
       imageSource    : null,
-      cargarImg      : false
+      imgBase        : null,
+      cargarImg      : false,
+      cargando       : false,
    }
 
    handlePress = () => {
@@ -27,14 +29,24 @@ class Detalle extends Component {
    };
 
    handleEntregarGuia= async ()=>{
+      const { detalleGias:{codigoGuiaPk}, operador, handleAbrirDetalle } = this.props
+      const { imgBase } = this.state;
       const url = "http://192.168.1.64/cesio/public/index.php/api/conductor/guia/cumplido"
+      this.setState({ cargando : true })
       try{
          const response = await axios.post(url,{
-            operador    :"en",
-            guia        : 3008897,
-            imageString : "http://raulperez.tieneblog.net/wp-content/uploads/2015/09/tux.jpg"
+            operador    : operador,
+            guia        : codigoGuiaPk,
+            imageString : imgBase
          });
-         console.log(response);
+         if(response.status){
+            this.setState({ 
+               cargando    : false,
+               imageSource : null,
+             });
+            alert("La Entrega fue exitosa");
+            handleAbrirDetalle()
+         }
       }catch(e){
          console.log(e)
       }
@@ -43,19 +55,29 @@ class Detalle extends Component {
    SelectPhoto= async (op)=>{      
       this.setState({ cargarImg : true })
       await RNImagePicker.showImagePicker(op, (response) => {
-          const source = { uri: response.uri };
-          if(response.uri){
-             this.setState({
-                imageSource : source,
-                cargarImg   : false
-             });
+         if (response.didCancel) {
+            this.setState({ cargarImg : false })
+          } else if (response.error) {
+            this.setState({ cargarImg : false })
+          } else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+          } else {
+            const source = { uri: response.uri };
+            const base64 = response.data;
+            if(response.uri){
+               this.setState({
+                  imageSource : source,
+                  imgBase     : base64,
+                  cargarImg   : false
+               });
+            } 
           }
        });
     };
 
    render() {
       const { isVisible, onRequestClose, detalleGias } = this.props;
-      const { cargarImg, imageSource } = this.state
+      const { cargarImg, imageSource, cargando } = this.state
 
       const options = {
          title: 'Seleccionar Foto',
@@ -70,8 +92,12 @@ class Detalle extends Component {
             <Text>itemId : {detalleGias.codigoGuiaPk} </Text>
             <Text>itemDestinatario : {detalleGias.destinatario} </Text>
             <Text>itemDestino : {detalleGias.destino} </Text>
-            <Button title = "Capturar Imagen" onPress={()=>this.SelectPhoto(options)}/>
-            <Button onPress={()=>this.handleEntregarGuia()} title="Entregar"/>
+            <Button title = "Capturar Imagen" onPress={()=>this.SelectPhoto(options)} disabled={cargando || cargarImg}/>
+
+            {cargando
+               ? <Spinner/>
+               : <Button onPress={()=>this.handleEntregarGuia()} title="Entregar" disabled={cargarImg}/>
+            }
 
             {cargarImg
                ? <Spinner/>

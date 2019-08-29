@@ -18,7 +18,7 @@ const AppNavigation = createStackNavigator(
       TabNavigator : TabNavigator
    },
    {
-      initialRouteName  : "TabNavigator",
+      initialRouteName  : "Sesion",
       headerMode        : "none"
    }
 );

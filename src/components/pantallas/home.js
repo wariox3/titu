@@ -58,6 +58,8 @@ class Home extends Component {
 
       const { arGuias, abrirDespacho, cargando, abrirDetalle, detalleGias } = this.state;
       const textColor = this.props.selected ? 'red' : 'black';
+      const { navigation } = this.props;
+      const operador = navigation.getParam('operador');
 
       return (
          <>
@@ -85,14 +87,17 @@ class Home extends Component {
             }
 
             <Detalle
-               onRequestClose =  {()=>this.handleAbrirDetalle()}
-               detalleGias    =  {detalleGias}
-               isVisible      =  {abrirDetalle}
+               handleAbrirDetalle = {()=>this.handleAbrirDetalle()}  
+               onRequestClose     =  {()=>this.handleAbrirDetalle()}
+               detalleGias        =  {detalleGias}
+               isVisible          =  {abrirDetalle}
+               operador           =  {operador}
             />
 
             <Carga
                ListaDespachos    =  {this.ListaDespachos.bind(this)}
                onRequestClose    =  {()=>this.handleAbrirDespacho()}
+               navigation        =  {navigation}
                isVisible         =  {abrirDespacho}
                cargando          =  {cargando}
             />
