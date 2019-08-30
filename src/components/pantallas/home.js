@@ -4,15 +4,14 @@ import Carga from "../despacho/carga";
 import Detalle from "../guia/detalle";
 import API from "../../api/api";
 import { connect } from 'react-redux';
-function mapStateToProps(state) {   
-   debugger
+
+function mapStateToProps(state) {         
+   debugger;
    return {
-      //arGuiasLocal: state.arGuiasGlobal
-      arGuiasLocal: []
+      lista: state.arGuiasGlobal
    }
 }
 class Home extends Component {
-
    state = {
       abrirDespacho  : false,
       abrirDetalle   : false,
@@ -20,21 +19,37 @@ class Home extends Component {
       error          : false,
       detalleGias    : {},
       arGuias        : [],
+      arGuiasLocal   : [],
    };
+
+   async componentDidMount() {
+      const response = await API.getGuias('en','701');
+      this.props.dispatch({
+        type: 'SET_GUIA_LISTA',
+        payload: {
+         arGuiasGlobal: response,
+        }
+      })
+   }   
 
    ListaDespachos = async (operador,despacho)=>{
       this.setState({ cargando : true });
       try {
-         const response = await API.getGuias(operador,despacho);
+         //const response = await API.getGuias(operador,despacho);
+         const response = await API.getGuias('en','700');
          if(response){
             this.setState({
                abrirDespacho : false,
                cargando      : false,
                error         : false,
                arGuias       : response,
-            })
-            
-
+            })            
+            this.props.dispatch({
+               type: 'SET_GUIA_LISTA',
+               payload: {
+                  arGuiasGlobal: response,
+               }
+             })            
          }
       }catch (e) {
          this.setState({ error : true, cargando : false, })
@@ -85,7 +100,7 @@ class Home extends Component {
                : <FlatList
                   keyExtractor={(item) => item.codigoGuiaPk.toString()}
                   //data={arGuias}
-                  data={this.props.arGuiasLocal}
+                  data={this.props.lista}
                   renderItem={({item}) =>
                      <View style={styles.listItem}>
                         <TouchableOpacity onPress={()=>this.handleDetalleGuia(item)}>

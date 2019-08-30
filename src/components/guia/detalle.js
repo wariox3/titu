@@ -4,10 +4,15 @@ import Modals from "../../commons/Modal";
 import RNImagePicker from "react-native-image-picker";
 import Spinner from '../../commons/Spinner';
 import axios from 'axios';
+import API from '../../api/api';
 import { connect } from 'react-redux';
 
 function mapStateToProps(state) {   
-   return {}
+   return {
+      arGuia : state.arGuia,
+      operador : state.codigoOperador,
+      despacho: state.codigoDespacho
+   }
 }
 
 class Detalle extends Component {
@@ -17,26 +22,15 @@ class Detalle extends Component {
       imgBase        : null,
       cargarImg      : false,
       cargando       : false,
+      
    }
 
-   handlePress = () => {
-      fetch('http://192.168.0.102/cesio/public/index.php/api/conductor/guia/prueba/en/1', {
-         method: 'GET'
-      })
-         .then( res => res.json())
-         .then( (responseJson) => {
-            console.log(responseJson)
-            this.props.navigation.navigate('Home')
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   };
 
-   handleEntregarGuia= async ()=>{
-      const { detalleGias:{codigoGuiaPk}, operador, handleAbrirDetalle } = this.props
-      const { imgBase } = this.state;
-      const url = "http://159.65.52.53/cesio/public/index.php/api/conductor/guia/cumplido"
+   handleEntregarGuia = async ()=>{
+      const { operador, handleAbrirDetalle } = this.props
+      const { codigoGuiaPk } = this.props.arGuia
+      const { imgBase } = this.state;      
+      const url = "http://159.65.52.53/cesio/public/index.php/api/conductor/guia/cumplido";      
       this.setState({ cargando : true })
       try{
          const response = await axios.post(url,{
@@ -50,7 +44,14 @@ class Detalle extends Component {
                imageSource : null,
              });
             alert("La Entrega fue exitosa");
-            handleAbrirDetalle()
+            const arrGuias = await API.getGuias(this.props.operador,this.props.despacho);                  
+            this.props.dispatch({
+                type: 'SET_GUIA_LISTA',
+                payload: {
+                    arGuias: arrGuias,
+                }
+            })             
+            this.props.cerrar();
          }
       }catch(e){
          console.log(e)
@@ -81,8 +82,10 @@ class Detalle extends Component {
     };
 
    render() {
-      const { isVisible, onRequestClose, detalleGias } = this.props;
+      const { isVisible, onRequestClose, detalleGias, cerrar, arGuia } = this.props;
       const { cargarImg, imageSource, cargando } = this.state
+
+      console.log(this.props);
 
       const options = {
          title: 'Seleccionar Foto',
@@ -94,9 +97,10 @@ class Detalle extends Component {
       return (
          <Modals onRequestClose = {onRequestClose} isVisible = {isVisible}>
             <Text>Detalle </Text>
-            <Text>itemId : {detalleGias.codigoGuiaPk} </Text>
-            <Text>itemDestinatario : {detalleGias.destinatario} </Text>
-            <Text>itemDestino : {detalleGias.destino} </Text>
+            <Text>Guia: {arGuia.codigoGuiaPk} </Text>
+            <Text>Destinatario: {arGuia.destinatario} </Text>
+            <Text>Destino: {arGuia.destino} </Text>
+
             <Button title = "Capturar Imagen" onPress={()=>this.SelectPhoto(options)} disabled={cargando || cargarImg}/>
 
             {cargando
@@ -109,6 +113,7 @@ class Detalle extends Component {
                : <Image style={{ height : 250, width : 300, marginTop : 22}} source={imageSource} /> 
 
             }
+            <Button title='Cancelar' onPress={cerrar}/>
          </Modals>
       )
    }

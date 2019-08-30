@@ -1,35 +1,50 @@
 import React, { Component } from 'react';
-import { Text } from 'react-native';
+import { Text, Button, TextInput } from 'react-native';
 import Modals from "../../commons/Modal";
-import FormDespacho from "./FormDespacho";
-import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
+import API from '../../api/api';
+import { connect } from 'react-redux';
 
+function mapStateToProps(state) {   
+   return {
+       despacho: state.codigoDespacho,
+       operador: state.codigoOperador
+   }
+ }
 class Carga extends Component {
 
    state = {
-      despacho       : "",
-      operador       : "",
-   };
+      des: this.props.despacho,
+      ope: this.props.operador
+   }
 
-   handleResetearCampos = () =>{    
-      this.props.navigation.navigate('Home', {"operador" : this.state.operador})
+   handleOnchaGe=(name, vale)=>{
       this.setState({
-         despacho : "",
-         operador : "",
+         [name] : vale
       })
    }
 
-   handleOnchange=(name, value)=>{
-      this.setState({
-         [name] : value
+   cargarDespacho = async (operador, despacho) => {
+      //debugger;
+      this.props.dispatch({
+          type: 'SET_PARAMETROS',
+          payload: {
+              codigoDespacho: despacho,
+              codigoOperador: operador            
+          }
+      })        
+      const arrGuias = await API.getGuias(operador,despacho);                  
+      this.props.dispatch({
+          type: 'SET_GUIA_LISTA',
+          payload: {
+              arGuias: arrGuias,
+          }
       })
-   };
+      this.props.cerrar();
+  }  
 
    render() {
 
-      const { isVisible, onRequestClose, ListaDespachos, cargando } = this.props;
-      const { despacho, operador } = this.state;
+      const { operador, despacho, isVisible, onRequestClose, ListaDespachos, cargando, cerrar, cargarDespacho } = this.props;
 
       return (
          <Modals
@@ -37,23 +52,35 @@ class Carga extends Component {
             isVisible       =  {isVisible}
          >
             <Text>Despacho :</Text>
-            <FormDespacho
-               handlePress = {()=>{ ListaDespachos(operador,despacho); this.handleResetearCampos() }}
-               OnChange    = {this.handleOnchange.bind(this)}
-               despacho    = {despacho}
-               operador    = {operador}
-               cargando    = {cargando}
+            <TextInput
+            underlineColorAndroid   = "black"
+            autoCapitalize          = 'none'            
+            placeholder             = "Operador"
+            autoCorrect             = {false}
+            onChangeText            = {(pe)=>this.handleOnchaGe("ope", pe)}
+            maxLength               = {2}
+            value                   = {this.state.ope}
+         />
+
+         <TextInput
+            underlineColorAndroid   = "black"
+            autoCapitalize          = 'none'
+            keyboardType            = {"numeric"}           
+            placeholder             = "Despacho"
+            autoCorrect             = {false}
+            onChangeText            = {(de)=>this.handleOnchaGe("des", de)}
+            value                   = {this.state.des}
+         />
+         
+            <Button               
+               onPress  =  {()=>this.cargarDespacho(this.state.ope,this.state.des)}
+               title    =  "Cargar"
             />
+
+            <Button title='Cancelar' onPress={cerrar}/>
          </Modals>
       )
    }
 }
 
-Carga.propTypes = {
-   ListaDespachos  : PropTypes.func,
-   onRequestClose  : PropTypes.func,
-   isVisible       : PropTypes.bool,
-   cargando        : PropTypes.bool,
-};
-
-export default Carga;
+export default connect(mapStateToProps)(Carga);

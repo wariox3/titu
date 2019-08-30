@@ -1,7 +1,7 @@
 import {createStore, applyMiddleware} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import getReducer from './reducers';
+import reducer from './reducers/guias';
 
 /*const store = createStore(reducer, {
     arGuiasGlobal: [],
@@ -14,10 +14,15 @@ const persistConfig = {
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, getReducer());
+const persistedReducer = persistReducer(persistConfig, reducer)
 
-export default () => {
-  let store = createStore(persistedReducer, applyMiddleware());
-  let persistor = persistStore(store);
-  return {store, persistor};
-};
+
+const store = createStore(persistedReducer, {
+    arGuias: [],
+    codigoDespacho: null,
+    codigoOperador: null,
+    arGuia: []
+})
+const persistor = persistStore(store)
+
+export { store, persistor };
