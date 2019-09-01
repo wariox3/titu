@@ -102,7 +102,7 @@ class Detalle extends Component {
             <Text>Destino: {arGuia.destino} </Text>
 
             <Button title = "Capturar Imagen" onPress={()=>this.SelectPhoto(options)} disabled={cargando || cargarImg}/>
-
+            <Text></Text>
             {cargando
                ? <Spinner/>
                : <Button onPress={()=>this.handleEntregarGuia()} title="Entregar" disabled={cargarImg}/>

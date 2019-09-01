@@ -2,7 +2,11 @@ import React from 'react'
 import {Text, View, Button} from "react-native";
 
 class Perfil extends React.Component {
-   
+   static navigationOptions = () => {
+      return {          
+        title: 'Perfil'
+      }
+  }
    render() {
       const { pop } = this.props.navigation;
       

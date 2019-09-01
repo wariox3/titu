@@ -4,19 +4,22 @@ import {
     Text
 } from 'react-native';
 import { connect } from 'react-redux';
-import Inicio from './containers/inicio';
-import GuiasLista from './containers/guia-lista';
+import Inicio from './containers/pantalla/inicio';
+import GuiasLista from './containers/guia/guia-lista';
 import Carga from './components/despacho/carga';
 import API from '../src/api/api';
-function mapStateToProps(state) {
-    
+function mapStateToProps(state) {    
     return {
         despacho: state.codigoDespacho,
         operador: state.codigoOperador
     }
   }
 class AppLayout extends Component {
-
+    static navigationOptions = () => {
+        return {          
+          title: 'Inicio'
+        }
+    }
     state = {
         modalCarga: false
     }

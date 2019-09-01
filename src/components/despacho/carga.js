@@ -3,6 +3,7 @@ import { Text, Button, TextInput } from 'react-native';
 import Modals from "../../commons/Modal";
 import API from '../../api/api';
 import { connect } from 'react-redux';
+import { View } from 'react-native-animatable';
 
 function mapStateToProps(state) {   
    return {
@@ -76,11 +77,12 @@ class Carga extends Component {
                onPress  =  {()=>this.cargarDespacho(this.state.ope,this.state.des)}
                title    =  "Cargar"
             />
-
+            <Text></Text>
             <Button title='Cancelar' onPress={cerrar}/>
          </Modals>
       )
    }
 }
+
 
 export default connect(mapStateToProps)(Carga);

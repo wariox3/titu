@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View,
   FlatList
 } from 'react-native';
-import Detalle from '../components/guia/detalle';
+import GuiaListaPresentacion from '../../components/guia/guia-lista-presentacion';
+import GuiaListaVacia from '../../components/guia/guia-lista-vacia';
+import GuiaListaSeparador from '../../components/guia/guia-lista-separador';
+import Guia from '../../components/guia/guia.js';
+import Detalle from '../../components/guia/detalle';
 import { connect } from 'react-redux';
-import Guia from '../components/guia.js';
+
 function mapStateToProps(state) {
   return {
     list: state.arGuias
@@ -20,8 +23,8 @@ class GuiaLista extends Component {
 
 
   keyExtractor = item => item.codigoGuiaPk.toString()
-  //renderEmtpy = () => <Text>No hay guias</Text>
-  //itemSeparator = () => <Text>------------------</Text>
+  renderListaVacia = () => <GuiaListaVacia text="No hay guias"/>
+  renderListaReparador = () => <GuiaListaSeparador />
   verDetalle = (item) => {
     this.props.dispatch({
       type: 'SET_GUIA_SELECCIONADA',
@@ -55,20 +58,21 @@ cerrarModal=()=>{
   render() {
 
     return (
-      <>
-        <FlatList
-          horizontal
+      <GuiaListaPresentacion
+        title="Lista guias"
+      >
+        <FlatList          
           keyExtractor={this.keyExtractor}
           data={this.props.list}
-          //ListEmptyComponent={this.renderEmtpy}
-          //ItemSeparatorComponent={this.itemSeparator}
+          ListEmptyComponent={this.renderListaVacia}
+          ItemSeparatorComponent={this.renderListaReparador}
           renderItem={this.renderItem}
         />
         <Detalle
           cerrar = {()=>this.cerrarModal()}
           isVisible = {this.state.abriModalDetalle} 
         />
-      </>
+      </GuiaListaPresentacion>
     )
   }
 }

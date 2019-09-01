@@ -7,10 +7,12 @@ const SesionNavigation = createSwitchNavigator(Sesion,{
    headerMode       : "none",
 });
 
-const TabNavigator = createBottomTabNavigator( Tabs,{
-   initialRouteName : "Home",
-   headerMode       : "none",
-});
+const TabNavigator = createBottomTabNavigator( 
+   Tabs,
+   {
+      initialRouteName : "Home",
+      headerMode       : "none",
+   });
 
 const AppNavigation = createStackNavigator(
    {
