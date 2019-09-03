@@ -3,7 +3,7 @@ import { createBottomTabNavigator, createAppContainer, createSwitchNavigator, cr
 import { Sesion, Tabs } from './index'
 
 const SesionNavigation = createSwitchNavigator(Sesion,{
-   initialRouteName : "InisioSesion",
+   initialRouteName : "InisioSesion",   
    headerMode       : "none",
 });
 
