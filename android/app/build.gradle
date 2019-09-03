@@ -131,8 +131,8 @@ android {
         applicationId "com.titu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "Caos"
+        versionCode 3
+        versionName "Aprende"
     }
     splits {
         abi {

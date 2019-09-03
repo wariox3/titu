@@ -6,8 +6,8 @@ import Perfil from "../components/perfil/perfil";
 
 export const Sesion = {
   InisioSesion : {
-     screen : Login,
-     screen : Aplicacion
+     screen : Login
+     //screen : Aplicacion
   }
 };
 
