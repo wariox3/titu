@@ -18,7 +18,7 @@ class Login extends React.Component{
    iniciarSesion = async () =>{
       const { usuario, contraseña } = this.state;
       const { navigate } = this.props.navigation;
-      const url = `http://159.65.52.53/cesio/public/index.php/api/conductor/autenticar/${usuario}/${contraseña}`;
+      const url = `http://165.22.222.162/cesio/public/index.php/api/conductor/autenticar/${usuario}/${contraseña}`;
       this.setState({ cargando : true });
       try{
          const response    = await fetch(url);

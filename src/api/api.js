@@ -1,4 +1,4 @@
-const BASE_API = 'http://159.65.52.53/cesio/public/index.php';
+const BASE_API = 'http://165.22.222.162/cesio/public/index.php';
 class Api {
     async getGuias(operador, despacho) {
         if(operador && despacho) {
