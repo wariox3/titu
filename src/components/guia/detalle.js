@@ -30,7 +30,7 @@ class Detalle extends Component {
       const { operador, handleAbrirDetalle } = this.props
       const { codigoGuiaPk } = this.props.arGuia
       const { imgBase } = this.state;      
-      const url = "http://159.65.52.53/cesio/public/index.php/api/conductor/guia/cumplido";      
+      const url = "http://165.22.222.162/cesio/public/index.php/api/conductor/guia/cumplido";      
       this.setState({ cargando : true })
       try{
          const response = await axios.post(url,{
@@ -54,7 +54,7 @@ class Detalle extends Component {
             this.props.cerrar();
          }
       }catch(e){
-         console.log(e)
+         console.log(e);
       }
    }
 
