@@ -1,8 +1,13 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import {Container, Body, Header} from 'native-base';
 
 class Inicio extends Component {
   render() {
-    return this.props.children
+    return (
+      <Header span>
+        <Body>{this.props.children}</Body>
+      </Header>
+    );
   }
 }
 
