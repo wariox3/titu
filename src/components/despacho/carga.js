@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import API from '../../api/api';
 import Modals from '../../commons/Modal';
 import {StyleSheet} from 'react-native';
-import {Button, Input, Item, Title, Text, View} from 'native-base';
+import {Button, Input, Item, H3, Text, View} from 'native-base';
 import {connect} from 'react-redux';
 
 function mapStateToProps(state) {
@@ -24,7 +24,6 @@ class Carga extends Component {
   };
 
   cargarDespacho = async (operador, despacho) => {
-    //debugger;
     this.props.dispatch({
       type: 'SET_PARAMETROS',
       payload: {
@@ -39,27 +38,28 @@ class Carga extends Component {
         arGuias: arrGuias,
       },
     });
+    this.setState({
+      des: '',
+      ope: '',
+    });
     this.props.cerrar();
   };
 
   render() {
-    const {
-      operador,
-      despacho,
-      isVisible,
-      onRequestClose,
-      ListaDespachos,
-      cargando,
-      cerrar,
-      cargarDespacho,
-    } = this.props;
+    const {isVisible, onRequestClose, cerrar} = this.props;
+    const {des, ope} = this.state;
+
+    const disabled = ope === '' || des === '';
 
     return (
       <Modals onRequestClose={onRequestClose} isVisible={isVisible}>
-        <Text>Despacho :</Text>
+        <View style={styles.title}>
+          <H3>Despacho</H3>
+        </View>
 
-        <Item rounded>
+        <Item rounded style={{margin: 11}}>
           <Input
+            style={{fontSize: 14}}
             autoCapitalize="none"
             placeholder="Operador"
             autoCorrect={false}
@@ -71,6 +71,7 @@ class Carga extends Component {
 
         <Item rounded>
           <Input
+            style={{fontSize: 14}}
             autoCapitalize="none"
             keyboardType={'numeric'}
             placeholder="Despacho"
@@ -82,6 +83,7 @@ class Carga extends Component {
 
         <View style={styles.container_buttons}>
           <Button
+            disabled={disabled}
             style={styles.button}
             onPress={() => this.cargarDespacho(this.state.ope, this.state.des)}>
             <Text>Cargar</Text>
@@ -105,6 +107,11 @@ const styles = StyleSheet.create({
   },
   container_buttons: {
     paddingHorizontal: 12,
+  },
+  title: {
+    alignItems: 'center',
+    display: 'flex',
+    padding: 12,
   },
 });
 

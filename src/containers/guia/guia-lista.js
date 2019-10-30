@@ -1,67 +1,64 @@
-import React, { Component } from 'react';
-import {
-  FlatList
-} from 'react-native';
+import React, {Component} from 'react';
+import {FlatList} from 'react-native';
 import GuiaListaPresentacion from '../../components/guia/guia-lista-presentacion';
 import GuiaListaVacia from '../../components/guia/guia-lista-vacia';
 import GuiaListaSeparador from '../../components/guia/guia-lista-separador';
 import Guia from '../../components/guia/guia.js';
 import Detalle from '../../components/guia/detalle';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 function mapStateToProps(state) {
   return {
-    list: state.arGuias
-  }
+    list: state.arGuias,
+  };
 }
 
 class GuiaLista extends Component {
-
   state = {
-    abriModalDetalle : false
-  }
+    abriModalDetalle: false,
+  };
 
-
-  keyExtractor = item => item.codigoGuiaPk.toString()
-  renderListaVacia = () => <GuiaListaVacia text="No hay guias"/>
-  renderListaReparador = () => <GuiaListaSeparador />
-  verDetalle = (item) => {
+  keyExtractor = item => item.codigoGuiaPk.toString();
+  renderListaVacia = () => <GuiaListaVacia text="No hay guias" />;
+  renderListaReparador = () => <GuiaListaSeparador />;
+  verDetalle = item => {
     this.props.dispatch({
       type: 'SET_GUIA_SELECCIONADA',
       payload: {
         arGuia: item,
-      }
-    })
+      },
+    });
+  };
 
-  }
-
-  abrirModal=()=>{
+  abrirModal = () => {
     this.setState({
-      abriModalDetalle : true
-    })
-}
+      abriModalDetalle: true,
+    });
+  };
 
-cerrarModal=()=>{
+  cerrarModal = () => {
     this.setState({
-      abriModalDetalle : false
-    })
-}  
+      abriModalDetalle: false,
+    });
+  };
 
   renderItem = ({item}) => {
     return (
-      <Guia {...item}
-        onPress={()=> { this.verDetalle(item); this.abrirModal() }}
+      <Guia
+        {...item}
+        onPress={() => {
+          this.verDetalle(item);
+          this.abrirModal();
+        }}
       />
-    )
-  }
+    );
+  };
 
   render() {
-
     return (
-      <GuiaListaPresentacion
-        title="Lista guias"
-      >
-        <FlatList          
+      <GuiaListaPresentacion title="Lista guias">
+        <FlatList
+          style={{marginBottom: 20}}
           keyExtractor={this.keyExtractor}
           data={this.props.list}
           ListEmptyComponent={this.renderListaVacia}
@@ -69,11 +66,11 @@ cerrarModal=()=>{
           renderItem={this.renderItem}
         />
         <Detalle
-          cerrar = {()=>this.cerrarModal()}
-          isVisible = {this.state.abriModalDetalle} 
+          cerrar={this.cerrarModal}
+          isVisible={this.state.abriModalDetalle}
         />
       </GuiaListaPresentacion>
-    )
+    );
   }
 }
 

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 function GuiaListaPresentacion(props) {
   return (
@@ -11,12 +7,11 @@ function GuiaListaPresentacion(props) {
       <Text style={styles.title}>{props.title}</Text>
       {props.children}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
     flex: 1,
   },
   title: {
@@ -25,7 +20,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
     marginLeft: 8,
-  }
-})
+  },
+});
 
-export default GuiaListaPresentacion
+export default GuiaListaPresentacion;

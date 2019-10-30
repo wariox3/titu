@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text, View, H2, Title, Card, CardItem} from 'native-base';
+import {Button, Text, View, Title, CardItem} from 'native-base';
 import {connect} from 'react-redux';
 import Inicio from './containers/pantalla/inicio';
 import GuiasLista from './containers/guia/guia-lista';
@@ -21,7 +21,7 @@ class AppLayout extends Component {
     };
   };
   state = {
-    modalCarga: true,
+    modalCarga: false,
   };
   async componentDidMount() {
     const arrGuias = await API.getGuias(
@@ -64,16 +64,14 @@ class AppLayout extends Component {
           </View>
         </Inicio>
 
-        <Card>
-          <View style={styles.container_button}>
-            <Button onPress={() => this.abrirModal()} style={styles.button}>
-              <Text>Cargar despacho</Text>
-            </Button>
-          </View>
-          <CardItem>
-            <GuiasLista />
-          </CardItem>
-        </Card>
+        <View style={styles.container_button}>
+          <Button onPress={() => this.abrirModal()} style={styles.button}>
+            <Text>Cargar despacho</Text>
+          </Button>
+        </View>
+        <CardItem style={{padding: 0, margin: 0, width: '100%'}}>
+          <GuiasLista />
+        </CardItem>
 
         <Carga
           isVisible={this.state.modalCarga}
