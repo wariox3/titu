@@ -1,4 +1,3 @@
-import React from 'react';
 import { createBottomTabNavigator, createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 import { Sesion, Tabs } from './index'
 

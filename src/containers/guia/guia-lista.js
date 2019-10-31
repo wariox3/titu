@@ -55,8 +55,10 @@ class GuiaLista extends Component {
   };
 
   render() {
+    const {nombreUsuario} = this.props;
+
     return (
-      <GuiaListaPresentacion title="Lista guias">
+      <GuiaListaPresentacion title="Lista guias" usuario={nombreUsuario}>
         <FlatList
           style={{marginBottom: 20}}
           keyExtractor={this.keyExtractor}

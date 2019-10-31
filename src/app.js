@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import Inicio from './containers/pantalla/inicio';
 import GuiasLista from './containers/guia/guia-lista';
 import Carga from './components/despacho/carga';
+import Geolocation from '@react-native-community/geolocation';
 import API from '../src/api/api';
 
 function mapStateToProps(state) {
@@ -14,16 +15,58 @@ function mapStateToProps(state) {
   };
 }
 
-class AppLayout extends Component {
+class Home extends Component {
   static navigationOptions = () => {
     return {
       title: 'Inicio',
     };
   };
+
   state = {
     modalCarga: false,
+    initialPosition: 'unknown',
+    latitud: '',
+    longitud: '',
   };
+
+  watchID: ?number = null;
+
+  posicionUsuario = async () => {
+    
+    await Geolocation.getCurrentPosition(
+      position => {
+        const initialPosition = JSON.stringify(position);
+        this.setState({initialPosition});
+      },
+      error => console.log('Error', JSON.stringify(error)),
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 5000,
+        distanceFilter: 1,
+      },
+    );
+    
+    this.watchID = await Geolocation.watchPosition(
+      position => {
+        const latitud = position.coords.latitude;
+        const longitud = position.coords.longitude;
+        this.setState({latitud, longitud});
+      },
+      error => console.log('Error', error),
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 5000,
+        distanceFilter: 1,
+      },
+    );
+
+  };
+
   async componentDidMount() {
+    this.posicionUsuario();
+
     const arrGuias = await API.getGuias(
       this.props.operador,
       this.props.despacho,
@@ -35,6 +78,11 @@ class AppLayout extends Component {
       },
     });
   }
+
+  componentWillUnmount = () => {
+    Geolocation.clearWatch(this.watchID);
+  };
+
   abrirModal = () => {
     this.setState({
       modalCarga: true,
@@ -48,6 +96,13 @@ class AppLayout extends Component {
   };
 
   render() {
+    const {
+      state: {
+        params: {usuario},
+      },
+    } = this.props.navigation;
+    const nombreUsuario = usuario;
+
     return (
       <>
         <Inicio>
@@ -69,8 +124,10 @@ class AppLayout extends Component {
             <Text>Cargar despacho</Text>
           </Button>
         </View>
+        <Text>{latitud}</Text>
+        <Text>{longitud}</Text>
         <CardItem style={{padding: 0, margin: 0, width: '100%'}}>
-          <GuiasLista />
+          <GuiasLista nombreUsuario={nombreUsuario} />
         </CardItem>
 
         <Carga
@@ -114,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(AppLayout);
+export default connect(mapStateToProps)(Home);

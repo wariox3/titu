@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Container, Body, Header} from 'native-base';
+import {Body, Header} from 'native-base';
 
 class Inicio extends Component {
   render() {

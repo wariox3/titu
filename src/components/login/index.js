@@ -26,7 +26,9 @@ class Login extends React.Component{
          const autenticar  =  res.autenticar;
 
          if(autenticar){
-            navigate("Home");
+            navigate("Home",{
+               usuario : usuario
+            });
             this.setState({
                usuario     : "",
                cargando    : false,
