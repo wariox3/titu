@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text, View, Title, CardItem} from 'native-base';
+import {Button, Text, View, Title, CardItem, Icon} from 'native-base';
 import {connect} from 'react-redux';
 import Inicio from './containers/pantalla/inicio';
 import GuiasLista from './containers/guia/guia-lista';
@@ -16,52 +16,29 @@ function mapStateToProps(state) {
 }
 
 class Home extends Component {
-  static navigationOptions = () => {
-    return {
-      title: 'Inicio',
-    };
-  };
-
   state = {
     modalCarga: false,
-    initialPosition: 'unknown',
     latitud: '',
     longitud: '',
   };
 
-  watchID: ?number = null;
-
-  posicionUsuario = async () => {
-    
-    await Geolocation.getCurrentPosition(
-      position => {
-        const initialPosition = JSON.stringify(position);
-        this.setState({initialPosition});
-      },
-      error => console.log('Error', JSON.stringify(error)),
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000,
-        distanceFilter: 1,
-      },
-    );
-    
-    this.watchID = await Geolocation.watchPosition(
+  posicionUsuario = () => {
+    const watchID = Geolocation.watchPosition(
       position => {
         const latitud = position.coords.latitude;
         const longitud = position.coords.longitude;
-        this.setState({latitud, longitud});
+        setInterval(() => {
+          this.setState({latitud, longitud});
+        }, 10000);
       },
       error => console.log('Error', error),
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000,
-        distanceFilter: 1,
+        timeout: 1000,
+        maximumAge: 10000,
       },
     );
-
+    return () => Geolocation.clearWatch(watchID);
   };
 
   async componentDidMount() {
@@ -78,10 +55,6 @@ class Home extends Component {
       },
     });
   }
-
-  componentWillUnmount = () => {
-    Geolocation.clearWatch(this.watchID);
-  };
 
   abrirModal = () => {
     this.setState({
@@ -102,6 +75,10 @@ class Home extends Component {
       },
     } = this.props.navigation;
     const nombreUsuario = usuario;
+
+    // const {latitud, longitud} = this.state;
+
+    // console.log(latitud, longitud);
 
     return (
       <>
@@ -124,8 +101,6 @@ class Home extends Component {
             <Text>Cargar despacho</Text>
           </Button>
         </View>
-        <Text>{latitud}</Text>
-        <Text>{longitud}</Text>
         <CardItem style={{padding: 0, margin: 0, width: '100%'}}>
           <GuiasLista nombreUsuario={nombreUsuario} />
         </CardItem>

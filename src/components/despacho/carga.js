@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import API from '../../api/api';
 import Modals from '../../commons/Modal';
 import {StyleSheet} from 'react-native';
-import {Button, Input, Item, H3, Text, View} from 'native-base';
+import {Button, Input, Item, H3, Text, View, Picker, Icon} from 'native-base';
 import {connect} from 'react-redux';
 
 function mapStateToProps(state) {
@@ -15,6 +15,7 @@ class Carga extends Component {
   state = {
     des: this.props.despacho,
     ope: this.props.operador,
+    novedad: '',
   };
 
   handleOnchaGe = (name, vale) => {
@@ -47,9 +48,11 @@ class Carga extends Component {
 
   render() {
     const {isVisible, onRequestClose, cerrar} = this.props;
-    const {des, ope} = this.state;
+    const {des, ope, novedad} = this.state;
 
     const disabled = ope === '' || des === '';
+
+    const opciones = [{name: 'Direccion errada'}, {name: 'Mercancia averiada'}];
 
     return (
       <Modals onRequestClose={onRequestClose} isVisible={isVisible}>
@@ -92,6 +95,22 @@ class Carga extends Component {
           <Button onPress={cerrar} style={styles.button}>
             <Text>Cancelar</Text>
           </Button>
+
+          <Button style={styles.button}>
+            <Text>Novedad</Text>
+          </Button>
+
+          <Item picker>
+            <Picker
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              selectedValue={novedad}
+              onValueChange={novedad => this.handleOnchaGe('novedad', novedad)}>
+              {opciones.map((item, key) => (
+                <Picker.Item key={key} value={item.name} label={item.name} />
+              ))}
+            </Picker>
+          </Item>
         </View>
       </Modals>
     );
