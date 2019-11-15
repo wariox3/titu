@@ -87,6 +87,7 @@ class Home extends Component {
             <Title>Informacion</Title>
           </View>
           <View style={styles.description}>
+            <Text style={styles.colorText}>Usuario: {nombreUsuario}</Text>
             <Text style={styles.colorText}>
               Despacho: {this.props.despacho}
             </Text>
