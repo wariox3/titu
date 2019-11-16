@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text, View, Title, CardItem, Icon, Badge} from 'native-base';
+import {Button, Text, View, Title, CardItem} from 'native-base';
 import {connect} from 'react-redux';
 import Inicio from './containers/pantalla/inicio';
 import GuiasLista from './containers/guia/guia-lista';
 import Carga from './components/despacho/carga';
 import Geolocation from '@react-native-community/geolocation';
 import API from '../src/api/api';
+import axios from 'axios';
+import {PermissionsAndroid} from 'react-native';
 
 function mapStateToProps(state) {
   return {
@@ -22,27 +24,72 @@ class Home extends Component {
     longitud: '',
   };
 
-  posicionUsuario = () => {
+  posicionUsuario = async () => {
     const watchID = Geolocation.watchPosition(
       position => {
         const latitud = position.coords.latitude;
         const longitud = position.coords.longitude;
-        setInterval(() => {
-          this.setState({latitud, longitud});
-        }, 10000);
+        this.setState({latitud, longitud});
       },
       error => console.log('Error', error),
       {
         enableHighAccuracy: true,
-        timeout: 1000,
-        maximumAge: 10000,
+        timeout: 2000,
+        maximumAge: 5000,
       },
     );
     return () => Geolocation.clearWatch(watchID);
   };
 
+  setPosicionUsuario = async () => {
+    const {latitud, longitud} = this.state;
+    const {operador, despacho} = this.props;
+    const {
+      state: {
+        params: {usuario},
+      },
+    } = this.props.navigation;
+    const url =
+      'http://165.22.222.162/cesio/public/index.php/api/conductor/despacho/ubicacion';
+    await axios.post(url, {
+      operador: operador,
+      longitud: longitud,
+      latitud: latitud,
+      despacho: despacho,
+      usuario: usuario,
+    });
+  };
+
+  requestLocationPermission = async () => {
+    const chckLocationPermission = PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+    if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Tienes acceso para la ubicación');
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'La aplicación requiere permiso de ubicación',
+            message:
+              'Requerimos permiso de ubicación para obtener la ubicación del dispositivo Por favor, concédenos',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Tienes acceso para la ubicación');
+        } else {
+          console.log('No tienes acceso a la ubicación');
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
   async componentDidMount() {
     this.posicionUsuario();
+    this.requestLocationPermission();
 
     const arrGuias = await API.getGuias(
       this.props.operador,
@@ -76,9 +123,9 @@ class Home extends Component {
     } = this.props.navigation;
     const nombreUsuario = usuario;
 
-    // const {latitud, longitud} = this.state;
-
-    // console.log(latitud, longitud);
+    setInterval(() => {
+      this.setPosicionUsuario();
+    }, 60000);
 
     return (
       <>
@@ -99,11 +146,11 @@ class Home extends Component {
 
         <View style={styles.container_button}>
           <Button onPress={() => this.abrirModal()} style={styles.button}>
-            <Icon name="add" />
+            <Text>Cargar Despacho</Text>
           </Button>
         </View>
         <CardItem style={{padding: 0, margin: 0, width: '100%'}}>
-          <GuiasLista />
+          <GuiasLista usuario={nombreUsuario} />
         </CardItem>
 
         <Carga
@@ -119,31 +166,29 @@ const styles = StyleSheet.create({
   container_button: {
     width: '100%',
     marginTop: 12,
-    position: 'absolute',
-    bottom: '0%',
-    left: '42%',
     paddingHorizontal: 24,
   },
 
   button: {
+    display: 'flex',
     borderRadius: 100,
     justifyContent: 'center',
-    alignSelf: 'center',
-    display: 'flex',
   },
 
   title: {
-    display: 'flex',
-    alignItems: 'center',
     width: '100%',
+    display: 'flex',
     padding: 6,
+    alignItems: 'center',
     marginBottom: 12,
   },
 
   description: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '100%',
   },
 
   colorText: {

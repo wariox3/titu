@@ -25,7 +25,7 @@ class Detalle extends Component {
   };
 
   handleEntregarGuia = async () => {
-    const {operador, handleAbrirDetalle} = this.props;
+    const {operador, handleAbrirDetalle, usuario} = this.props;
     const {codigoGuiaPk} = this.props.arGuia;
     const {imgBase} = this.state;
     const url =
@@ -33,8 +33,9 @@ class Detalle extends Component {
     this.setState({cargando: true});
     try {
       const response = await axios.post(url, {
-        operador: operador,
+        operador,
         guia: codigoGuiaPk,
+        usuario,
         imageString: imgBase,
       });
       if (response.status) {

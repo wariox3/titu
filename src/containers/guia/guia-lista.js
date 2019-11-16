@@ -83,6 +83,7 @@ class GuiaLista extends Component {
         />
         <Detalle
           cerrar={this.cerrarModal}
+          usuario={this.props.usuario}
           isVisible={this.state.abriModalDetalle}
         />
         <ModalNovedad
