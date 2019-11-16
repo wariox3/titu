@@ -6,6 +6,7 @@ import GuiaListaSeparador from '../../components/guia/guia-lista-separador';
 import Guia from '../../components/guia/guia.js';
 import Detalle from '../../components/guia/detalle';
 import {connect} from 'react-redux';
+import ModalNovedad from './modalNovedad';
 
 function mapStateToProps(state) {
   return {
@@ -16,6 +17,8 @@ function mapStateToProps(state) {
 class GuiaLista extends Component {
   state = {
     abriModalDetalle: false,
+    abriModalNovedad: false,
+    novedad: '',
   };
 
   keyExtractor = item => item.codigoGuiaPk.toString();
@@ -42,6 +45,12 @@ class GuiaLista extends Component {
     });
   };
 
+  toggleModalNovedad = () => {
+    this.setState({
+      abriModalNovedad: !this.state.abriModalNovedad,
+    });
+  };
+
   renderItem = ({item}) => {
     return (
       <Guia
@@ -50,8 +59,15 @@ class GuiaLista extends Component {
           this.verDetalle(item);
           this.abrirModal();
         }}
+        buttonNovedad={() => this.toggleModalNovedad()}
       />
     );
+  };
+
+  handleOnChanges = (name, vale) => {
+    this.setState({
+      [name]: vale,
+    });
   };
 
   render() {
@@ -68,6 +84,12 @@ class GuiaLista extends Component {
         <Detalle
           cerrar={this.cerrarModal}
           isVisible={this.state.abriModalDetalle}
+        />
+        <ModalNovedad
+          novedad={this.state.novedad}
+          onChange={this.handleOnChanges}
+          isVisible={this.state.abriModalNovedad}
+          toggleModalNovedad={() => this.toggleModalNovedad()}
         />
       </GuiaListaPresentacion>
     );

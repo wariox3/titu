@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet} from 'react-native';
-import {Button, Text, View, Title, CardItem, Icon} from 'native-base';
+import {Button, Text, View, Title, CardItem, Icon, Badge} from 'native-base';
 import {connect} from 'react-redux';
 import Inicio from './containers/pantalla/inicio';
 import GuiasLista from './containers/guia/guia-lista';
@@ -99,11 +99,11 @@ class Home extends Component {
 
         <View style={styles.container_button}>
           <Button onPress={() => this.abrirModal()} style={styles.button}>
-            <Text>Cargar despacho</Text>
+            <Icon name="add" />
           </Button>
         </View>
         <CardItem style={{padding: 0, margin: 0, width: '100%'}}>
-          <GuiasLista nombreUsuario={nombreUsuario} />
+          <GuiasLista />
         </CardItem>
 
         <Carga
@@ -117,14 +117,18 @@ class Home extends Component {
 
 const styles = StyleSheet.create({
   container_button: {
-    paddingHorizontal: 24,
-    marginTop: 12,
     width: '100%',
+    marginTop: 12,
+    position: 'absolute',
+    bottom: '0%',
+    left: '42%',
+    paddingHorizontal: 24,
   },
 
   button: {
     borderRadius: 100,
     justifyContent: 'center',
+    alignSelf: 'center',
     display: 'flex',
   },
 
