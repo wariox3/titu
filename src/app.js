@@ -9,6 +9,7 @@ import Geolocation from '@react-native-community/geolocation';
 import API from '../src/api/api';
 import axios from 'axios';
 import {PermissionsAndroid} from 'react-native';
+import BackgroundTimer from 'react-native-background-timer';
 
 function mapStateToProps(state) {
   return {
@@ -22,6 +23,7 @@ class Home extends Component {
     modalCarga: false,
     latitud: '',
     longitud: '',
+    prueba: 0,
   };
 
   posicionUsuario = async () => {
@@ -91,6 +93,10 @@ class Home extends Component {
     this.posicionUsuario();
     this.requestLocationPermission();
 
+    BackgroundTimer.runBackgroundTimer(() => {
+      this.setPosicionUsuario();
+    }, 60000);
+
     const arrGuias = await API.getGuias(
       this.props.operador,
       this.props.despacho,
@@ -122,10 +128,6 @@ class Home extends Component {
       },
     } = this.props.navigation;
     const nombreUsuario = usuario;
-
-    setInterval(() => {
-      this.setPosicionUsuario();
-    }, 60000);
 
     return (
       <>

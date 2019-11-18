@@ -34,6 +34,8 @@ target 'titu' do
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
+  pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
+
   target 'tituTests' do
     inherit! :search_paths
     # Pods for testing
