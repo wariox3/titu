@@ -8,7 +8,7 @@ const FormularioLogin = ({
   usuario,
   contraseña,
   OnChange,
-  iniciarSesion,
+  autenticacion,
   cargando,
 }) => {
   const inhabilitar = usuario === '' || contraseña === '';
@@ -55,7 +55,7 @@ const FormularioLogin = ({
             <Button
               rounded
               success
-              onPress={iniciarSesion}
+              onPress={autenticacion}
               disabled={inhabilitar}
               style={styles.button}>
               <Text>Iniciar Sesion</Text>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
 });
 
 FormularioLogin.propTypes = {
-  iniciarSesion: PropTypes.func,
+  autenticacion: PropTypes.func,
   contraseña: PropTypes.string,
   OnChange: PropTypes.func,
   cargando: PropTypes.bool,

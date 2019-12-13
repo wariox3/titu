@@ -23,7 +23,6 @@ class Home extends Component {
     modalCarga: false,
     latitud: '',
     longitud: '',
-    prueba: 0,
   };
 
   posicionUsuario = async () => {
