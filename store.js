@@ -21,7 +21,9 @@ const store = createStore(persistedReducer, {
     arGuias: [],
     codigoDespacho: null,
     codigoOperador: null,
-    arGuia: []
+    arGuia: [],
+    arrNovedadTipos:  [],
+    codigoOperador: [],
 })
 const persistor = persistStore(store)
 

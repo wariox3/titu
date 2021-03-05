@@ -1,6 +1,13 @@
 import React from 'react';
+import {connect} from 'react-redux';
+
 import FormularioLogin from "./FormularioLogin";
 
+function mapStateToProps(state) {
+   return {
+     codigoOperador: state.codigoOperador
+   };
+ }
 class Login extends React.Component{
 
    state = {
@@ -24,8 +31,15 @@ class Login extends React.Component{
          const response    = await fetch(url);
          const res         = await response.json();
          const autenticar  =  res.autenticar;
+         const operador  =  res.operador;
 
          if(autenticar){
+            this.props.dispatch({
+               type: 'SET_CODIGO_OPERADOR',
+               payload: {
+                  codigoOperador: operador,
+               },
+             });
             navigate("Home",{
                usuario : usuario
             });
@@ -58,4 +72,4 @@ class Login extends React.Component{
    }
 }
 
-export default Login;
+export default connect(mapStateToProps)(Login);

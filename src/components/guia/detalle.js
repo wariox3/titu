@@ -17,6 +17,7 @@ function mapStateToProps(state) {
 }
 
 class Detalle extends Component {
+  
   state = {
     imageSource: null,
     imgBase: null,
@@ -99,7 +100,13 @@ class Detalle extends Component {
       title: 'Seleccionar Foto',
       takePhotoButtonTitle: 'Tomar foto',
       chooseFromLibraryButtonTitle: 'Abrir galeria',
-      quality: 1,
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+      maxWidth: 500,
+      maxHeight: 500,
+      quality: 1
     };
 
     return (

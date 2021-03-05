@@ -9,11 +9,13 @@ import Geolocation from '@react-native-community/geolocation';
 import API from '../src/api/api';
 import axios from 'axios';
 import {PermissionsAndroid} from 'react-native';
+import Select2 from "react-native-select-two"
 
 function mapStateToProps(state) {
   return {
     despacho: state.codigoDespacho,
     operador: state.codigoOperador,
+    codigoOperador: state.codigoOperador
   };
 }
 
@@ -65,7 +67,7 @@ class Home extends Component {
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
     );
     if (chckLocationPermission === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Tienes acceso para la ubicación');
+      //console.log('Tienes acceso para la ubicación');
     } else {
       try {
         const granted = await PermissionsAndroid.request(
@@ -77,9 +79,9 @@ class Home extends Component {
           },
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Tienes acceso para la ubicación');
+          //console.log('Tienes acceso para la ubicación');
         } else {
-          console.log('No tienes acceso a la ubicación');
+          //console.log('No tienes acceso a la ubicación');
         }
       } catch (err) {
         console.log(err);
@@ -87,20 +89,43 @@ class Home extends Component {
     }
   };
 
+  obtenerNovedadTipos = async () => {
+    const url = 'http://165.22.222.162/cesio/public/index.php/api/novedadtipo/lista';
+    const {codigoOperador} = this.props;
+    try{
+        const response = await axios.post(url, {operador: codigoOperador});
+        const datos = await response.data;
+        return datos;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+
   async componentDidMount() {
     this.posicionUsuario();
     this.requestLocationPermission();
+    const arrNovedadTipos = await this.obtenerNovedadTipos();
 
     const arrGuias = await API.getGuias(
       this.props.operador,
       this.props.despacho,
     );
+
     this.props.dispatch({
       type: 'SET_GUIA_LISTA',
       payload: {
         arGuias: arrGuias,
       },
     });
+    this.props.dispatch({
+      type: 'SET_NOVEDAD_TIPO_LISTA',
+      payload: {
+        arrNovedadTipos: arrNovedadTipos,
+      },
+    });
+
+
   }
 
   abrirModal = () => {

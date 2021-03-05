@@ -7,10 +7,14 @@ import Guia from '../../components/guia/guia.js';
 import Detalle from '../../components/guia/detalle';
 import {connect} from 'react-redux';
 import ModalNovedad from './modalNovedad';
+import axios from 'axios';
 
 function mapStateToProps(state) {
   return {
     list: state.arGuias,
+    arrNovedadTipos: state.arrNovedadTipos,
+    codigoOperador: state.codigoOperador,
+    arGuia: state.arGuia
   };
 }
 
@@ -19,6 +23,8 @@ class GuiaLista extends Component {
     abriModalDetalle: false,
     abriModalNovedad: false,
     novedad: '',
+    novedadDescripcion: '',
+    codigoGuia: '',
   };
 
   keyExtractor = item => item.codigoGuiaPk.toString();
@@ -51,6 +57,11 @@ class GuiaLista extends Component {
     });
   };
 
+  funcionesbuttonNovedad = item => {
+    this.handleOnChanges('codigoGuia', item.codigoGuiaPk)
+    this.toggleModalNovedad()
+  }
+
   renderItem = ({item}) => {
     return (
       <Guia
@@ -58,8 +69,9 @@ class GuiaLista extends Component {
         onPress={() => {
           this.verDetalle(item);
           this.abrirModal();
+
         }}
-        buttonNovedad={() => this.toggleModalNovedad()}
+        buttonNovedad={() => this.funcionesbuttonNovedad(item)}
       />
     );
   };
@@ -69,6 +81,38 @@ class GuiaLista extends Component {
       [name]: vale,
     });
   };
+
+  handleNovedad = async () => {
+    //creacion de datos para ser enviados para poder crear novedad de un guia
+    const url =
+    'http://165.22.222.162/cesio/public/index.php/api/localizador/guia/novedad/nueva';
+
+    const {codigoOperador} = this.props;
+    const { novedad, novedadDescripcion, codigoGuia } = this.state
+
+    //intentar enviar los datos
+    try {
+      const response = await axios.post(url, {
+        operador: codigoOperador,
+        codigoGuia: codigoGuia,
+        codigoNovedadTipo: novedad,
+        descripcion: novedadDescripcion,
+      });
+      if (response.status) {
+        this.setState({
+          abriModalDetalle: false,
+          abriModalNovedad: false,
+          novedad: '',
+          novedadDescripcion: '',
+          CodigoGuia: 0,
+        });
+        alert('La Entrega fue exitosa');
+
+      }
+      } catch (e) {
+      console.log(e);
+    }
+  }
 
   render() {
     return (
@@ -88,9 +132,13 @@ class GuiaLista extends Component {
         />
         <ModalNovedad
           novedad={this.state.novedad}
+          codigoGuia={this.state.codigoGuia}
           onChange={this.handleOnChanges}
+          novedadDescripcion={this.state.novedadDescripcion}
           isVisible={this.state.abriModalNovedad}
           toggleModalNovedad={() => this.toggleModalNovedad()}
+          arrNovedadTipos={this.props.arrNovedadTipos}
+          handleNovedad={this.handleNovedad}
         />
       </GuiaListaPresentacion>
     );

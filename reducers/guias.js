@@ -8,6 +8,12 @@ function guias(state = {}, action) {
         }     
         case 'SET_GUIA_SELECCIONADA': {
             return {...state, ...action.payload}
+        }
+        case 'SET_NOVEDAD_TIPO_LISTA': {
+            return {...state, ...action.payload}
+        }
+        case 'SET_CODIGO_OPERADOR': {
+            return {...state, ...action.payload}
         }             
         default:
             return state;
