@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import GuiaListaPresentacion from '../../components/guia/guia-lista-presentacion';
 import GuiaListaVacia from '../../components/guia/guia-lista-vacia';
 import GuiaListaSeparador from '../../components/guia/guia-lista-separador';
@@ -8,13 +8,16 @@ import Detalle from '../../components/guia/detalle';
 import {connect} from 'react-redux';
 import ModalNovedad from './modalNovedad';
 import axios from 'axios';
+import API from '../../api/api';
 
 function mapStateToProps(state) {
   return {
     list: state.arGuias,
     arrNovedadTipos: state.arrNovedadTipos,
     codigoOperador: state.codigoOperador,
-    arGuia: state.arGuia
+    arGuia: state.arGuia,
+    despacho: state.codigoDespacho,
+    operador: state.codigoOperador,
   };
 }
 
@@ -25,6 +28,7 @@ class GuiaLista extends Component {
     novedad: '',
     novedadDescripcion: '',
     codigoGuia: '',
+    refreshing: false
   };
 
   keyExtractor = item => item.codigoGuiaPk.toString();
@@ -114,6 +118,22 @@ class GuiaLista extends Component {
     }
   }
 
+  onRefresh = async() => {
+    this.handleOnChanges('refreshing', true)
+    const arrGuias = await API.getGuias(
+      this.props.operador,
+      this.props.despacho,
+    );
+    this.props.dispatch({
+      type: 'SET_GUIA_LISTA',
+      payload: {
+        arGuias: arrGuias,
+      },
+    });
+    this.handleOnChanges('refreshing', false)
+
+  } 
+
   render() {
     return (
       <GuiaListaPresentacion title="Lista guias">
@@ -124,6 +144,7 @@ class GuiaLista extends Component {
           ListEmptyComponent={this.renderListaVacia}
           ItemSeparatorComponent={this.renderListaReparador}
           renderItem={this.renderItem}
+          refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
         />
         <Detalle
           cerrar={this.cerrarModal}
