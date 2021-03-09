@@ -94,28 +94,35 @@ class GuiaLista extends Component {
     const {codigoOperador} = this.props;
     const { novedad, novedadDescripcion, codigoGuia } = this.state
 
-    //intentar enviar los datos
-    try {
-      const response = await axios.post(url, {
-        operador: codigoOperador,
-        codigoGuia: codigoGuia,
-        codigoNovedadTipo: novedad,
-        descripcion: novedadDescripcion,
-      });
-      if (response.status) {
-        this.setState({
-          abriModalDetalle: false,
-          abriModalNovedad: false,
-          novedad: '',
-          novedadDescripcion: '',
-          CodigoGuia: 0,
+    //validacion de novedad
+    if(novedad == "" || novedad == null){
+      alert("Se debe seleccionar una novedad tipo")
+    } else {
+      //intentar enviar los datos
+      try {
+        const response = await axios.post(url, {
+          operador: codigoOperador,
+          codigoGuia: codigoGuia,
+          codigoNovedadTipo: novedad,
+          descripcion: novedadDescripcion,
         });
-        alert('La Entrega fue exitosa');
+        if (response.status) {
+          this.setState({
+            abriModalDetalle: false,
+            abriModalNovedad: false,
+            novedad: '',
+            novedadDescripcion: '',
+            CodigoGuia: 0,
+          });
+          alert('La Entrega fue exitosa');
 
+        }
+        } catch (e) {
+        console.log(e);
       }
-      } catch (e) {
-      console.log(e);
     }
+
+
   }
 
   onRefresh = async() => {
