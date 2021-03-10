@@ -9,7 +9,6 @@ import Geolocation from '@react-native-community/geolocation';
 import API from '../src/api/api';
 import axios from 'axios';
 import {PermissionsAndroid} from 'react-native';
-import Select2 from "react-native-select-two"
 
 function mapStateToProps(state) {
   return {
